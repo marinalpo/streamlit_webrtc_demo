@@ -1,11 +1,8 @@
 import streamlit as st
 from PIL import Image
-import av
 import numpy as np
+import av
 import cv2
-import mediapipe as mp
-from deepface import DeepFace
-import time
 from streamlit_webrtc import (
     RTCConfiguration,
     WebRtcMode,
@@ -13,7 +10,17 @@ from streamlit_webrtc import (
     webrtc_streamer,
 )
 
+# PAGE CONFIGURATION --------------------------------------------------------------------------------------------------
+RTC_CONFIGURATION = RTCConfiguration(
+    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+)
+st.set_page_config(
+       layout='centered',  # 'centered' or 'wide'
+       initial_sidebar_state="collapsed",
+       menu_items=None)
 
+
+# CALLBACK DEFINITION -------------------------------------------------------------------------------------------------
 def callback(frame: av.VideoFrame) -> av.VideoFrame:
     img = frame.to_ndarray(format="bgr24")
     img = np.flip(img, axis=1).astype(np.uint8)
@@ -21,16 +28,7 @@ def callback(frame: av.VideoFrame) -> av.VideoFrame:
     return av.VideoFrame.from_ndarray(img, format="bgr24")
 
 
-## PAGE CONFIGURATION -------------------------------------------------------------------------------------------------
-RTC_CONFIGURATION = RTCConfiguration(
-    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
-)
-
-st.set_page_config(
-       layout='centered',  # 'centered' or 'wide'
-       initial_sidebar_state="collapsed",
-       menu_items=None)
-
+# APPLICATION --------------------------------------------------------------------------------------------------
 cols = st.columns([1, 3, 1])
 cols[1].write(' ')
 
